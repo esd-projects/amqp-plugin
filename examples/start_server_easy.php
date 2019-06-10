@@ -8,7 +8,7 @@ require __DIR__ . '/../vendor/autoload.php';
 define("ROOT_DIR", __DIR__ . "/..");
 define("RES_DIR", __DIR__ . "/resources");
 
-$server = new DefaultServer(null);
+$server = new DefaultServer(null, \ESD\Plugins\Amqp\ExampleClass\AmqpPort::class);
 
 $server->getPlugManager()->addPlug(new AmqpPlugin());
 //配置
