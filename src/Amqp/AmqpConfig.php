@@ -16,7 +16,7 @@ class AmqpConfig extends BaseConfig
     protected $name;
 
     /**
-     * @var AmqpConfig[]
+     * @var array
      */
     protected $hosts = [];
 
@@ -231,7 +231,7 @@ class AmqpConfig extends BaseConfig
     }
 
     /**
-     * @return AmqpConfig[]
+     * @return array
      */
     public function getHosts(): array
     {
@@ -239,7 +239,7 @@ class AmqpConfig extends BaseConfig
     }
 
     /**
-     * @param AmqpConfig[] $hosts
+     * @param array $hosts
      */
     public function setHosts(array $hosts): void
     {
