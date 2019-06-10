@@ -6,7 +6,6 @@ namespace ESD\Plugins\Amqp;
 use Exception;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
-use ReflectionException;
 
 class AmqpConnection
 {
@@ -19,7 +18,7 @@ class AmqpConnection
     /**
      * @var AMQPStreamConnection
      */
-    protected $connection;
+    protected $connection = null;
 
     /**
      * AmqpConnection constructor.
@@ -29,39 +28,18 @@ class AmqpConnection
     public function __construct(AmqpConfig $amqpConfig)
     {
         $amqpConfig->buildConfig();
-        /**
-         * @var $connection AmqpConnection
-         */
-        $connection = AMQPStreamConnection::create_connection($amqpConfig->getHosts(), [
-            'insist' => $amqpConfig->isInsist(),
-            'login_method' => $amqpConfig->getLoginMethod(),
-            'login_response' => $amqpConfig->getLoginResponse(),
-            'locale' => $amqpConfig->getLocale(),
-            'connection_timeout' => $amqpConfig->getConnectionTimeout(),
-            'read_write_timeout' => $amqpConfig->getReadWriteTimeout(),
-            'context' => $amqpConfig->getContext(),
-            'keepalive' => $amqpConfig->isKeepAlive(),
-            'heartbeat' => $amqpConfig->getHeartBeat()
-        ]);
-        $this->connection = $connection;
         $this->amqpConfig = $amqpConfig;
     }
 
     /**
      * @param null $channel_id
      * @return AmqpChannel
-     * @throws ReflectionException
+     * @throws Exception
      */
     public function channel($channel_id = null)
     {
-        if($this->connection->isConnected()) {
-            return $this->connection->channel($channel_id);
-        } else {
-            $this->connection->reconnect();
-            $channel = $this->connection->channel($channel_id);
-        }
-
-        return $channel;
+        $this->connect();
+        return $this->connection->channel($channel_id);
     }
 
     /**
@@ -78,5 +56,32 @@ class AmqpConnection
     public function setAmqpConfig(AmqpConfig $amqpConfig): void
     {
         $this->amqpConfig = $amqpConfig;
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function connect()
+    {
+        if($this->connection && !$this->connection->isConnected()) {
+            $this->connection->reconnect();
+        } else if (!$this->connection) {
+            var_dump("test");
+            /**
+             * @var $connection AmqpConnection
+             */
+            $connection = AMQPStreamConnection::create_connection($this->amqpConfig->getHosts(), [
+                'insist' => $this->amqpConfig->isInsist(),
+                'login_method' => $this->amqpConfig->getLoginMethod(),
+                'login_response' => $this->amqpConfig->getLoginResponse(),
+                'locale' => $this->amqpConfig->getLocale(),
+                'connection_timeout' => $this->amqpConfig->getConnectionTimeout(),
+                'read_write_timeout' => $this->amqpConfig->getReadWriteTimeout(),
+                'context' => $this->amqpConfig->getContext(),
+                'keepalive' => $this->amqpConfig->isKeepAlive(),
+                'heartbeat' => $this->amqpConfig->getHeartBeat()
+            ]);
+            $this->connection = $connection;
+        }
     }
 }

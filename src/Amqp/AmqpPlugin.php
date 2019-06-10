@@ -83,7 +83,6 @@ class AmqpPlugin extends AbstractPlugin
         }
         $context->add("amqpPool", $amqpPool);
         $this->setToDIContainer(AmqpPool::class, $amqpPool);
-        $this->debug("channel: ". ($this->amqp()->is_open()));
         $this->ready();
     }
 }

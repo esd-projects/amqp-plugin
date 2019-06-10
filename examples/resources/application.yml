@@ -1,0 +1,15 @@
+esd:
+  port:
+    http:
+      host: 0.0.0.0
+      port: 8080
+      sock_type: 1
+      open_http_protocol: true
+
+amqp:
+  default:
+    hosts:
+      - {host: 127.0.0.1, port: 5672, user: guest, password: guest, vhost: /}
+    connectionTimeout: 0.3
+    heartBeat: 60
+    keepAlive: true
