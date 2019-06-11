@@ -13,7 +13,9 @@ class AmqpPort extends DefaultPort
 
     public function onHttpRequest(Request $request, Response $response)
     {
-        var_dump($this->amqp());
+        enableRuntimeCoroutine(true, HOOK_TCP);
+
+        var_dump($this->amqp()->is_open());
 
         $response->withContent("hello");
         $response->end();

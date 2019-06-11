@@ -67,20 +67,22 @@ class AmqpPlugin extends AbstractPlugin
         //重新获取配置
         $this->configList = [];
 
-        $configs = Server::$instance->getConfigContext()->get(AmqpConfig::key, []);
+        $configs = Server::$instance->getConfigContext()->get(AmqpPoolConfig::key, []);
         if (empty($configs)) {
             $this->warn("没有amqp配置");
             return;
         }
         foreach ($configs as $key => $value) {
-            $amqpConfig = new AmqpConfig();
-            $amqpConfig->setName($key);
-            $this->configList[$key] = $amqpConfig->buildFromConfig($value);
+            $amqpPoolConfig = new AmqpPoolConfig();
+            $amqpPoolConfig->setName($key);
+            $this->configList[$key] = $amqpPoolConfig->buildFromConfig($value);
+            $amqpPoolConfig->buildConfig();
 
-            $amqpConnection = new AmqpConnection($amqpConfig);
+            $amqpConnection = new AmqpConnection($amqpPoolConfig);
             $amqpPool->addConnection($amqpConnection);
-            $this->debug("已添加名为 {$amqpConfig->getName()} 的Amqp连接");
+            $this->debug("已添加名为 {$amqpPoolConfig->getName()} 的Amqp连接");
         }
+
         $context->add("amqpPool", $amqpPool);
         $this->setToDIContainer(AmqpPool::class, $amqpPool);
         $this->ready();

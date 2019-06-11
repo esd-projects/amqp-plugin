@@ -8,243 +8,42 @@ use ESD\Core\Plugins\Config\BaseConfig;
 
 class AmqpConfig extends BaseConfig
 {
-    const key = "amqp";
+    const key = "amqp.hosts";
 
     /**
      * @var string
      */
-    protected $name;
-
-    /**
-     * @var array
-     */
-    protected $hosts = [];
-
-    /**
-     * @var bool
-     */
-    protected $insist = false;
-
-    /**
-     * @var string
-     */
-    protected $loginMethod = 'AMQPLAIN';
-
-    /**
-     * @var null
-     */
-    protected $loginResponse = null;
-
-    /**
-     * @var string
-     */
-    protected $locale = 'en_US';
-
-    /**
-     * @var float
-     */
-    protected $connectionTimeout = 3.0;
-
-    /**
-     * @var float
-     */
-    protected $readWriteTimeout = 130.0;
-
-    /**
-     * @var null
-     */
-    protected $context = null;
-
-    /**
-     * @var bool
-     */
-    protected $keepAlive = false;
+    protected $host;
 
     /**
      * @var int
      */
-    protected $heartBeat = 60;
+    protected $port;
 
+    /**
+     * @var string
+     */
+    protected $user;
+
+    /**
+     * @var string
+     */
+    protected $password;
+
+    /**
+     * @var string
+     */
+    protected $vhost;
+
+    /**
+     * ConsulConfig constructor.
+     * @throws \ReflectionException
+     */
     public function __construct()
     {
-        parent::__construct(self::key, true, "name");
+        parent::__construct(self::key);
     }
 
-    /**
-     * @return bool
-     */
-    public function isInsist(): bool
-    {
-        return $this->insist;
-    }
-
-    /**
-     * @param bool $insist
-     */
-    public function setInsist(bool $insist): void
-    {
-        $this->insist = $insist;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLoginMethod(): string
-    {
-        return $this->loginMethod;
-    }
-
-    /**
-     * @param string $loginMethod
-     */
-    public function setLoginMethod(string $loginMethod): void
-    {
-        $this->loginMethod = $loginMethod;
-    }
-
-    /**
-     * @return null
-     */
-    public function getLoginResponse()
-    {
-        return $this->loginResponse;
-    }
-
-    /**
-     * @param null $loginResponse
-     */
-    public function setLoginResponse($loginResponse): void
-    {
-        $this->loginResponse = $loginResponse;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLocale(): string
-    {
-        return $this->locale;
-    }
-
-    /**
-     * @param string $locale
-     */
-    public function setLocale(string $locale): void
-    {
-        $this->locale = $locale;
-    }
-
-    /**
-     * @return float
-     */
-    public function getConnectionTimeout(): float
-    {
-        return $this->connectionTimeout;
-    }
-
-    /**
-     * @param float $connectionTimeout
-     */
-    public function setConnectionTimeout(float $connectionTimeout): void
-    {
-        $this->connectionTimeout = $connectionTimeout;
-    }
-
-    /**
-     * @return float
-     */
-    public function getReadWriteTimeout(): float
-    {
-        return $this->readWriteTimeout;
-    }
-
-    /**
-     * @param float $readWriteTimeout
-     */
-    public function setReadWriteTimeout(float $readWriteTimeout): void
-    {
-        $this->readWriteTimeout = $readWriteTimeout;
-    }
-
-    /**
-     * @return null
-     */
-    public function getContext()
-    {
-        return $this->context;
-    }
-
-    /**
-     * @param null $context
-     */
-    public function setContext($context): void
-    {
-        $this->context = $context;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isKeepAlive(): bool
-    {
-        return $this->keepAlive;
-    }
-
-    /**
-     * @param bool $keepAlive
-     */
-    public function setKeepAlive(bool $keepAlive): void
-    {
-        $this->keepAlive = $keepAlive;
-    }
-
-    /**
-     * @return int
-     */
-    public function getHeartBeat(): int
-    {
-        return $this->heartBeat;
-    }
-
-    /**
-     * @param int $heartBeat
-     */
-    public function setHeartBeat(int $heartBeat): void
-    {
-        $this->heartBeat = $heartBeat;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @return array
-     */
-    public function getHosts(): array
-    {
-        return $this->hosts;
-    }
-
-    /**
-     * @param array $hosts
-     */
-    public function setHosts(array $hosts): void
-    {
-        $this->hosts = $hosts;
-    }
 
     /**
      * 构建配置
@@ -252,12 +51,93 @@ class AmqpConfig extends BaseConfig
      */
     public function buildConfig()
     {
-        if (!extension_loaded('bcmath')) {
-            throw new AmqpException("缺少bcmath扩展");
+        if(empty($this->host)){
+            throw new AmqpException("host必须设置");
         }
 
-        if(empty($this->hosts)){
-            throw new AmqpException("hosts必须设置");
+        if(empty($this->port) || $this->port > 65535 || $this->port < 1){
+            throw new AmqpException("port必须设置");
         }
     }
+
+    /**
+     * @return string
+     */
+    public function getHost(): string
+    {
+        return $this->host;
+    }
+
+    /**
+     * @param string $host
+     */
+    public function setHost(string $host): void
+    {
+        $this->host = $host;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPort(): int
+    {
+        return $this->port;
+    }
+
+    /**
+     * @param int $port
+     */
+    public function setPort(int $port): void
+    {
+        $this->port = $port;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUser(): string
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param string $user
+     */
+    public function setUser(string $user): void
+    {
+        $this->user = $user;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param string $password
+     */
+    public function setPassword(string $password): void
+    {
+        $this->password = $password;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVhost(): string
+    {
+        return $this->vhost;
+    }
+
+    /**
+     * @param string $vhost
+     */
+    public function setVhost(string $vhost): void
+    {
+        $this->vhost = $vhost;
+    }
+
 }

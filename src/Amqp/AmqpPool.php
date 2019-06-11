@@ -16,14 +16,14 @@ class AmqpPool
      */
     public function addConnection(AmqpConnection $amqpConnection)
     {
-        $this->poolList[$amqpConnection->getAmqpConfig()->getName()] = $amqpConnection;
+        $this->poolList[$amqpConnection->getAmqpPoolConfig()->getName()] = $amqpConnection;
     }
 
     /**
      * @param string $name
      * @param int $channel_id
      * @return AMQPChannel
-     * @throws \ReflectionException
+     * @throws \Exception
      */
     public function channel($name = "default", $channel_id = null): AMQPChannel
     {

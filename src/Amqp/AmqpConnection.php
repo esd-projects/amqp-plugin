@@ -11,9 +11,9 @@ class AmqpConnection
 {
 
     /**
-     * @var AmqpConfig
+     * @var AmqpPoolConfig
      */
-    protected $amqpConfig;
+    protected $amqpPoolConfig;
 
     /**
      * @var AMQPStreamConnection
@@ -22,13 +22,13 @@ class AmqpConnection
 
     /**
      * AmqpConnection constructor.
-     * @param AmqpConfig $amqpConfig
+     * @param AmqpPoolConfig $amqpPoolConfig
      * @throws Exception
      */
-    public function __construct(AmqpConfig $amqpConfig)
+    public function __construct(AmqpPoolConfig $amqpPoolConfig)
     {
-        $amqpConfig->buildConfig();
-        $this->amqpConfig = $amqpConfig;
+        $amqpPoolConfig->buildConfig();
+        $this->amqpPoolConfig = $amqpPoolConfig;
     }
 
     /**
@@ -42,21 +42,6 @@ class AmqpConnection
         return $this->connection->channel($channel_id);
     }
 
-    /**
-     * @return AmqpConfig
-     */
-    public function getAmqpConfig(): AmqpConfig
-    {
-        return $this->amqpConfig;
-    }
-
-    /**
-     * @param AmqpConfig $amqpConfig
-     */
-    public function setAmqpConfig(AmqpConfig $amqpConfig): void
-    {
-        $this->amqpConfig = $amqpConfig;
-    }
 
     /**
      * @throws Exception
@@ -70,18 +55,34 @@ class AmqpConnection
             /**
              * @var $connection AmqpConnection
              */
-            $connection = AMQPStreamConnection::create_connection($this->amqpConfig->getHosts(), [
-                'insist' => $this->amqpConfig->isInsist(),
-                'login_method' => $this->amqpConfig->getLoginMethod(),
-                'login_response' => $this->amqpConfig->getLoginResponse(),
-                'locale' => $this->amqpConfig->getLocale(),
-                'connection_timeout' => $this->amqpConfig->getConnectionTimeout(),
-                'read_write_timeout' => $this->amqpConfig->getReadWriteTimeout(),
-                'context' => $this->amqpConfig->getContext(),
-                'keepalive' => $this->amqpConfig->isKeepAlive(),
-                'heartbeat' => $this->amqpConfig->getHeartBeat()
+            $connection = AMQPStreamConnection::create_connection($this->amqpPoolConfig->getHosts(), [
+                'insist' => $this->amqpPoolConfig->isInsist(),
+                'login_method' => $this->amqpPoolConfig->getLoginMethod(),
+                'login_response' => $this->amqpPoolConfig->getLoginResponse(),
+                'locale' => $this->amqpPoolConfig->getLocale(),
+                'connection_timeout' => $this->amqpPoolConfig->getConnectionTimeout(),
+                'read_write_timeout' => $this->amqpPoolConfig->getReadWriteTimeout(),
+                'context' => $this->amqpPoolConfig->getContext(),
+                'keepalive' => $this->amqpPoolConfig->isKeepAlive(),
+                'heartbeat' => $this->amqpPoolConfig->getHeartBeat()
             ]);
             $this->connection = $connection;
         }
+    }
+
+    /**
+     * @return AmqpPoolConfig
+     */
+    public function getAmqpPoolConfig(): AmqpPoolConfig
+    {
+        return $this->amqpPoolConfig;
+    }
+
+    /**
+     * @param AmqpPoolConfig $amqpPoolConfig
+     */
+    public function setAmqpPoolConfig(AmqpPoolConfig $amqpPoolConfig): void
+    {
+        $this->amqpPoolConfig = $amqpPoolConfig;
     }
 }
