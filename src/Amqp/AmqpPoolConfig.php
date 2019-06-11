@@ -16,7 +16,7 @@ class AmqpPoolConfig extends BaseConfig
     protected $name;
 
     /**
-     * @var AmqpConfig[]
+     * @var AmqpHostConfig[]
      */
     protected $hosts = [];
 
@@ -259,10 +259,10 @@ class AmqpPoolConfig extends BaseConfig
 
         foreach ($hosts as $key => $host) {
             if (is_array($host)) {
-                $amqpConfig = new AmqpConfig();
+                $amqpConfig = new AmqpHostConfig();
                 $amqpConfig->buildFromConfig($host);
                 $this->hosts[$key] = $amqpConfig;
-            } else if($host instanceof AmqpConfig) {
+            } else if($host instanceof AmqpHostConfig) {
                 $this->hosts[$key] = $host;
             }
         }

@@ -4,140 +4,32 @@
 namespace ESD\Plugins\Amqp;
 
 
-use ESD\Core\Plugins\Config\BaseConfig;
-
-class AmqpConfig extends BaseConfig
+class AmqpConfig
 {
-    const key = "amqp.hosts";
-
     /**
-     * @var string
+     * @var AmqpPoolConfig[]
      */
-    protected $host;
+    protected $amqpConfigs;
 
-    /**
-     * @var int
-     */
-    protected $port;
 
-    /**
-     * @var string
-     */
-    protected $user;
-
-    /**
-     * @var string
-     */
-    protected $password;
-
-    /**
-     * @var string
-     */
-    protected $vhost;
-
-    /**
-     * ConsulConfig constructor.
-     * @throws \ReflectionException
-     */
-    public function __construct()
+    public function addAmqpPoolConfig(AmqpPoolConfig $buildFromConfig)
     {
-        parent::__construct(self::key);
-    }
-
-
-    /**
-     * 构建配置
-     * @throws AmqpException
-     */
-    public function buildConfig()
-    {
-        if(empty($this->host)){
-            throw new AmqpException("host必须设置");
-        }
-
-        if(empty($this->port) || $this->port > 65535 || $this->port < 1){
-            throw new AmqpException("port必须设置");
-        }
+        $this->amqpConfigs[$buildFromConfig->getName()] = $buildFromConfig;
     }
 
     /**
-     * @return string
+     * @return AmqpPoolConfig[]
      */
-    public function getHost(): string
+    public function getAmqpConfigs(): array
     {
-        return $this->host;
+        return $this->amqpConfigs;
     }
 
     /**
-     * @param string $host
+     * @param AmqpPoolConfig[] $amqpConfigs
      */
-    public function setHost(string $host): void
+    public function setAmqpConfigs(array $amqpConfigs): void
     {
-        $this->host = $host;
+        $this->amqpConfigs = $amqpConfigs;
     }
-
-    /**
-     * @return int
-     */
-    public function getPort(): int
-    {
-        return $this->port;
-    }
-
-    /**
-     * @param int $port
-     */
-    public function setPort(int $port): void
-    {
-        $this->port = $port;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUser(): string
-    {
-        return $this->user;
-    }
-
-    /**
-     * @param string $user
-     */
-    public function setUser(string $user): void
-    {
-        $this->user = $user;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
-    /**
-     * @param string $password
-     */
-    public function setPassword(string $password): void
-    {
-        $this->password = $password;
-    }
-
-    /**
-     * @return string
-     */
-    public function getVhost(): string
-    {
-        return $this->vhost;
-    }
-
-    /**
-     * @param string $vhost
-     */
-    public function setVhost(string $vhost): void
-    {
-        $this->vhost = $vhost;
-    }
-
 }

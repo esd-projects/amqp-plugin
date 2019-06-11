@@ -11,7 +11,7 @@ class AmqpConnection
 {
 
     /**
-     * @var AmqpPoolConfig
+     * @var AmqpConfig
      */
     protected $amqpPoolConfig;
 
@@ -51,7 +51,6 @@ class AmqpConnection
         if($this->connection && !$this->connection->isConnected()) {
             $this->connection->reconnect();
         } else if (!$this->connection) {
-            var_dump("test");
             /**
              * @var $connection AmqpConnection
              */
