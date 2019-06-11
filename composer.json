@@ -1,6 +1,7 @@
 {
   "require": {
     "esd/esd-core": "~0.1",
+    "esd/esd-psr": "~0.1",
     "php-amqplib/php-amqplib": "^2.9",
 
     "ext-json": "*",
